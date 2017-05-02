@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, Response, json
-from random import randint
+from random import randint, random
+
+from utils import randomDate, randomNif
 
 app = Flask(__name__)
 
@@ -39,7 +41,7 @@ def get_clients():
         "Av. St John"
     ]
 
-    client_country = [
+    client_location = [
         "Spain",
         "Argentina",
         "England",
@@ -57,10 +59,12 @@ def get_clients():
 
     result=[{
         "idClient": idClient+1,
+        "nif": randomNif (),
         "name": client_name[randint(0,5)],
         "surname": client_surname [randint(0,5)],
         "address": client_addr [randint(0,6)] + " n. "+ str(randint(0,50)),
-        "loation": client_country [randint(0,12)]
+        "loation": client_location [randint(0,12)],
+        "fecha_nac": randomDate("1/1/2005 1:30 PM", "1/1/2009 4:50 AM", random())
         }
             for x in range (500) ]
 
