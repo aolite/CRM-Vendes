@@ -141,8 +141,12 @@ result_sales =[
     for x in range(500)]
 
 @app.route('/')
-def hello_world():
-    return render_template('hello.html', name="Jinja")
+def landing_page():
+    return render_template('hello.html')
+
+@app.route('/api')
+def api_page():
+    return render_template('api.html')
 
 @app.route ('/api/v1/clients')
 def get_clients():
