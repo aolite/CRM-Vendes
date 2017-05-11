@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, Response, json, render_template
 from random import randint, random
 
-from utils import randomDate, randomNif
+from utils import randomDate, randomNif, alignmentProductCategory
 
 app = Flask(__name__)
 
@@ -26,30 +26,9 @@ client_surname = [
     "Dark"
 ]
 
-client_addr = [
-    "Av. del Olmo",
-    "Av. st Patrick station",
-    "Central road",
-    "Calle del Cerco",
-    "Av. Wall Street",
-    "Calle del ultimo trago",
-    "Av. St John"
-]
-
-client_location = [
-    "Spain",
-    "Argentina",
-    "England",
-    "Germany",
-    "Brazil",
-    "US",
-    "China",
-    "India",
-    "Japan",
-    "Mexico",
-    "France",
-    "Italy",
-    "Russia"
+client_type = [
+    {"idClientType": "clientType_1", "name": "Personal", "description": "Personal/Client accounts"},
+    {"idClientType": "clientType_2", "name": "Company", "description": "Personal/Client accounts"}
 ]
 
 result_client = [{
@@ -57,11 +36,8 @@ result_client = [{
     "nif": randomNif(),
     "name": client_name[randint(0, 5)],
     "surname": client_surname[randint(0, 5)],
-    "address": client_addr[randint(0, 6)] + " n. " + str(randint(0, 50)),
-    "loation": client_location[randint(0, 12)],
-    "fecha_nac": randomDate("1/1/2015 1:30 PM", "1/1/2017 4:50 AM", random())
-}
-    for x in range(500)]
+    "clientType": client_type[randint(0, 1)]["idClientType"]
+} for x in range(500)]
 
 product_name =[
         "Apple Watch",
@@ -86,7 +62,7 @@ product_name =[
         "Huawei L5",
         "Huawei L6",
         "Huawei L7",
-        "Huawei L8"
+        "Huawei L8",
         "IPad",
         "IPad 2",
         "IPad Pro",
@@ -118,25 +94,40 @@ product_category = [
         "Smartphone",
         "Tablets",
         "Smart TV",
-        "Whatch Gadges",
-        "Chargers",
-        "Mobile Gadges"
+        "Watch Gadges",
+        "Phone Gadges"
     ]
+
+product_category_desc =[
+    "Categories for the smartwhatch",
+    "Categories for the smartphones",
+    "Categories for the Tablets",
+    "Categories for the Smart TVs",
+    "Categories for the Watch Gadges",
+    "Categories for the Phone Gadges"
+]
 
 
 result_product = [{
-        "idProduct": "Product_"+ str(x),
+        "ProductCode": "Product_"+ str(x),
         "productName": product_name [x],
-        "productCategory": product_category [randint(0,5)]
-    }
-        for x in range(43)]
+        "price": randint(300,3000),
+        "productCategory": alignmentProductCategory(x, product_category)
+    } for x in range(45)]
+
+result_category=[{
+    "idCategory": "Category_"+ str(x),
+    "categoryName": product_category[x],
+    "categoryDesc": product_category_desc[x]
+    } for x in range (6)]
 
 result_sales =[
     {
         "idSales": "Sale_"+str(x),
-        "client": result_client[randint(0,499)]["name"] + " "+ result_client[randint(0,499)]["surname"],
-        "product": result_product[randint(0,42)]["productName"],
-        "quantity": randint(1,12)
+        "client": result_client[randint(0,499)]["nif"],
+        "product": result_product[randint(0,42)]["ProductCode"],
+        "quantity": randint(1,12),
+        "saleDate": randomDate("1/1/2015 1:30 PM", "1/1/2017 4:50 AM", random())
     }
     for x in range(500)]
 
@@ -152,9 +143,17 @@ def api_page():
 def get_clients():
     return Response(json.dumps(result_client),  mimetype='application/json')
 
+@app.route ('/api/v1/clientTypes')
+def get_clientTypes():
+    return Response(json.dumps(client_type),  mimetype='application/json')
+
 @app.route ('/api/v1/products')
 def get_products ():
     return Response(json.dumps(result_product),  mimetype='application/json')
+
+@app.route ('/api/v1/categories')
+def get_categories ():
+    return Response(json.dumps(result_category),  mimetype='application/json')
 
 @app.route ('/api/v1/sales')
 def get_sales ():

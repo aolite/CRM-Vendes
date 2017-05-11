@@ -27,3 +27,23 @@ def randomNif():
     nif_number = random.randint(10000000,99999999)
     nif_letter = nif_letter_mask[nif_number % 23]
     return str(nif_number)+nif_letter;
+
+def alignmentProductCategory(idProduct, productCategoy):
+    if idProduct in range (0,2):
+        return productCategoy[0]
+    else:
+        if idProduct in range (2,23):
+            return productCategoy[1]
+        else:
+            if (idProduct in range (23,27)):
+                return productCategoy[2]
+            else:
+                if (idProduct in range (27,39)):
+                    return productCategoy[3]
+                else:
+                    if (idProduct in range (39,42)):
+                        return productCategoy[4]
+                    else:
+                        if (idProduct in range(42,46)):
+                            return productCategoy[5]
+    return None;
